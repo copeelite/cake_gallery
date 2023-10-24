@@ -6,7 +6,7 @@ import {
   StyleSheet,
   SafeAreaView,
   Dimensions,
-  PanResponder
+  PanResponder,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import MenuBar from "./components/MenuBar";
@@ -17,56 +17,65 @@ const App = () => {
   const menuBarWidth = 250;
   const screenWidth = Dimensions.get("window").width;
 
-  const menuBarPosition = useRef(new Animated.Value(-menuBarWidth)).current;
-  const productListPosition = useRef(new Animated.Value(0)).current;
-  const productListWidth = useRef(new Animated.Value(screenWidth)).current;
+  // const menuBarPosition = useRef(new Animated.Value(-menuBarWidth)).current;
+  // const productListPosition = useRef(new Animated.Value(0)).current;
+  // const productListWidth = useRef(new Animated.Value(screenWidth)).current;
 
   const toggleMenuBar = () => {
     setMenuBarOpen(!isMenuBarOpen);
-
-    Animated.parallel([
-      Animated.timing(menuBarPosition, {
-        toValue: isMenuBarOpen ? -menuBarWidth : 0,
-        duration: 300,
-        useNativeDriver: false,
-      }),
-      Animated.timing(productListPosition, {
-        toValue: isMenuBarOpen ? 0 : -menuBarWidth,
-        duration: 300,
-        useNativeDriver: false,
-      }),
-      Animated.timing(productListWidth, {
-        toValue: isMenuBarOpen ? screenWidth : screenWidth - menuBarWidth,
-        duration: 300,
-        useNativeDriver: false,
-      }),
-    ]).start();
+    Animated.timing(animationValue, {
+      toValue: isMenuBarOpen ? 0 : 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
   };
-  
+  const animationValue = useRef(new Animated.Value(0)).current;
+
+  const menuBarTranslateX = animationValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-menuBarWidth, 0],
+  });
+
+  const productListTranslateX = animationValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -menuBarWidth],
+  });
+
+  const productListScaledWidth = animationValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [screenWidth, screenWidth - menuBarWidth],
+  });
+
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderEnd: (e, gestureState) => {
-      if (gestureState.dx > 100) {  // if swipe left to right
+      if (gestureState.dx > 100) {
+        // if swipe left to right
         if (!isMenuBarOpen) toggleMenuBar(); // open the menu bar
-      } else if (gestureState.dx < -100) { // if swipe right to left
-        if (isMenuBarOpen) toggleMenuBar();  // close the menu bar
+      } else if (gestureState.dx < -100) {
+        // if swipe right to left
+        if (isMenuBarOpen) toggleMenuBar(); // close the menu bar
       }
       return true;
-    }});
+    },
+  });
   return (
     <SafeAreaView style={styles.container} {...panResponder.panHandlers}>
       <Animated.View
         style={[
           styles.menuBarContainer,
-          { width: menuBarWidth, left: menuBarPosition },
+          { transform: [{ translateX: menuBarTranslateX }] },
         ]}
       >
         <MenuBar />
       </Animated.View>
+
       <Animated.View
         style={[
-          {right: productListPosition,
-          width: productListWidth,}
+          {
+            transform: [{ translateX: productListTranslateX }],
+            width: productListScaledWidth,
+          },
         ]}
       >
         <ProductList />
@@ -96,8 +105,8 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     flex: 1,
-    justifyContent: 'center', // Center content vertically
-    alignItems: 'center', // Center content horizontally
+    justifyContent: "center", // Center content vertically
+    alignItems: "center", // Center content horizontally
   },
   iconContainer: {
     position: "absolute",
