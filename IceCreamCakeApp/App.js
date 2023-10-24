@@ -10,6 +10,7 @@ const App = () => {
   const categories = [
     { id: 1, name: 'Chocolate Cakes' },
     { id: 2, name: 'Vanilla Cakes' },
+    {id: 3 , name: 'delicious strawberry Cake'}
     // ... add more categories
   ];
 
