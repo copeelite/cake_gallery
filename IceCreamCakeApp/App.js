@@ -16,35 +16,33 @@ const App = () => {
   const [isMenuBarOpen, setMenuBarOpen] = useState(false);
   const menuBarWidth = 250;
   const screenWidth = Dimensions.get("window").width;
-
-  // const menuBarPosition = useRef(new Animated.Value(-menuBarWidth)).current;
-  // const productListPosition = useRef(new Animated.Value(0)).current;
-  // const productListWidth = useRef(new Animated.Value(screenWidth)).current;
-
+  const menuBarPosition = useRef(new Animated.Value(-menuBarWidth)).current;
+  const productListPosition = useRef(new Animated.Value(0)).current;
+  const productListWidth = useRef(new Animated.Value(screenWidth)).current;
   const toggleMenuBar = () => {
-    setMenuBarOpen(!isMenuBarOpen);
-    Animated.timing(animationValue, {
-      toValue: isMenuBarOpen ? 0 : 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
+    
+    Animated.parallel([
+      Animated.timing(menuBarPosition, {
+          toValue: isMenuBarOpen ? -menuBarWidth : 0,
+          duration: 300,
+          useNativeDriver: false,
+      }),
+      Animated.timing(productListPosition, {
+          toValue: isMenuBarOpen ? 0 : -menuBarWidth,
+          duration: 300,
+          useNativeDriver: false,
+      }),
+      Animated.timing(productListWidth, {
+          toValue: isMenuBarOpen ? screenWidth : screenWidth - menuBarWidth,
+          duration: 300,
+          useNativeDriver: false,
+      }),
+  ]).start(() => {
+      // This callback is executed once the animation is complete
+      setMenuBarOpen(!isMenuBarOpen);
+  });
   };
-  const animationValue = useRef(new Animated.Value(0)).current;
-
-  const menuBarTranslateX = animationValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-menuBarWidth, 0],
-  });
-
-  const productListTranslateX = animationValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, -menuBarWidth],
-  });
-
-  const productListScaledWidth = animationValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [screenWidth, screenWidth - menuBarWidth],
-  });
+  
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
@@ -64,7 +62,7 @@ const App = () => {
       <Animated.View
         style={[
           styles.menuBarContainer,
-          { transform: [{ translateX: menuBarTranslateX }] },
+          { width: menuBarWidth, left: menuBarPosition },
         ]}
       >
         <MenuBar />
@@ -72,10 +70,8 @@ const App = () => {
 
       <Animated.View
         style={[
-          {
-            transform: [{ translateX: productListTranslateX }],
-            width: productListScaledWidth,
-          },
+            {right: productListPosition,
+              width: productListWidth,}
         ]}
       >
         <ProductList />

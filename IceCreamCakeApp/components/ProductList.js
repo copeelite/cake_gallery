@@ -89,6 +89,7 @@ const styles = StyleSheet.create({
   },
   productPrice: {
     marginLeft: 10,
+    textAlign: 'right', // Ensure the price is aligned to the right
   },
 });
 
