@@ -6,7 +6,6 @@ import {
   StyleSheet,
   SafeAreaView,
   Dimensions,
-  PanResponder
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import MenuBar from "./components/MenuBar";
@@ -27,34 +26,19 @@ const App = () => {
     Animated.parallel([
       Animated.timing(menuBarPosition, {
         toValue: isMenuBarOpen ? -menuBarWidth : 0,
-        duration: 300,
+        duration: 150,
         useNativeDriver: false,
       }),
       Animated.timing(productListPosition, {
-        toValue: isMenuBarOpen ? 0 : -menuBarWidth,
-        duration: 300,
-        useNativeDriver: false,
-      }),
-      Animated.timing(productListWidth, {
-        toValue: isMenuBarOpen ? screenWidth : screenWidth - menuBarWidth,
-        duration: 300,
+        toValue: isMenuBarOpen ? 0 : menuBarWidth / 2,
+        duration: 150,
         useNativeDriver: false,
       }),
     ]).start();
   };
-  
-  const panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onPanResponderEnd: (e, gestureState) => {
-      if (gestureState.dx > 100) {  // if swipe left to right
-        if (!isMenuBarOpen) toggleMenuBar(); // open the menu bar
-      } else if (gestureState.dx < -100) { // if swipe right to left
-        if (isMenuBarOpen) toggleMenuBar();  // close the menu bar
-      }
-      return true;
-    }});
+
   return (
-    <SafeAreaView style={styles.container} {...panResponder.panHandlers}>
+    <SafeAreaView style={styles.container}>
       <Animated.View
         style={[
           styles.menuBarContainer,
@@ -64,10 +48,12 @@ const App = () => {
         <MenuBar />
       </Animated.View>
       <Animated.View
-        style={[
-          {right: productListPosition,
-          width: productListWidth,}
-        ]}
+        style={{
+          
+          flex: 1,
+          transform: [{ translateX: productListPosition }],
+          width: productListWidth,
+        }}
       >
         <ProductList />
       </Animated.View>
@@ -108,3 +94,14 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+
+const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onPanResponderEnd: (e, gestureState) => {
+      if (gestureState.dx > 100) {  // if swipe left to right
+        if (!isMenuBarOpen) toggleMenuBar(); // open the menu bar
+      } else if (gestureState.dx < -100) { // if swipe right to left
+        if (isMenuBarOpen) toggleMenuBar();  // close the menu bar
+      }
+      return true;
+    }});

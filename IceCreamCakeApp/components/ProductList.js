@@ -1,7 +1,40 @@
+
+const fakeProducts = [
+  {
+    id: 1,
+    name: 'Chocolate Cake',
+    price: 12.99,
+    image: 'https://via.placeholder.com/150?text=Chocolate+Cake'
+  },
+  {
+    id: 2,
+    name: 'Vanilla Cake',
+    price: 10.99,
+    image: 'https://via.placeholder.com/150?text=Vanilla+Cake'
+  },
+  {
+    id: 3,
+    name: 'Strawberry Cake',
+    price: 14.99,
+    image: 'https://via.placeholder.com/150?text=Strawberry+Cake'
+  },
+  {
+    id: 4,
+    name: 'Blueberry Muffin',
+    price: 4.99,
+    image: 'https://via.placeholder.com/150?text=Blueberry+Muffin'
+  },
+  {
+    id: 5,
+    name: 'Croissant',
+    price: 2.99,
+    image: 'https://via.placeholder.com/150?text=Croissant'
+  }
+];
 import React from 'react';
 import { View, Text, Image, StyleSheet, SafeAreaView } from 'react-native';
 
-const ProductList = ({ products = [] }) => {
+const ProductList = ({ products = fakeProducts }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
