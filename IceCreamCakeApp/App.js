@@ -11,38 +11,32 @@ import {
 import { Feather } from "@expo/vector-icons";
 import MenuBar from "./components/MenuBar";
 import ProductList from "./components/ProductList";
-
 const App = () => {
   const [isMenuBarOpen, setMenuBarOpen] = useState(false);
   const menuBarWidth = 250;
-  const screenWidth = Dimensions.get("window").width;
   const menuBarPosition = useRef(new Animated.Value(-menuBarWidth)).current;
-  const productListPosition = useRef(new Animated.Value(0)).current;
-  const productListWidth = useRef(new Animated.Value(screenWidth)).current;
+  const productListWidth = useRef(new Animated.Value(Dimensions.get("window").width)).current;
+
   const toggleMenuBar = () => {
-    
+    let targetWidth = isMenuBarOpen ? Dimensions.get("window").width : Dimensions.get("window").width - menuBarWidth;
+
     Animated.parallel([
       Animated.timing(menuBarPosition, {
-          toValue: isMenuBarOpen ? -menuBarWidth : 0,
-          duration: 300,
-          useNativeDriver: false,
-      }),
-      Animated.timing(productListPosition, {
-          toValue: isMenuBarOpen ? 0 : -menuBarWidth,
-          duration: 300,
-          useNativeDriver: false,
+        toValue: isMenuBarOpen ? -menuBarWidth : 0,
+        duration: 150,
+        useNativeDriver: false,
       }),
       Animated.timing(productListWidth, {
-          toValue: isMenuBarOpen ? screenWidth : screenWidth - menuBarWidth,
-          duration: 300,
-          useNativeDriver: false,
+        toValue: targetWidth,
+        duration: 150,
+        useNativeDriver: false,
       }),
-  ]).start(() => {
-      // This callback is executed once the animation is complete
+    ]).start(() => {
+      
       setMenuBarOpen(!isMenuBarOpen);
-  });
+    });
   };
-  
+
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
@@ -62,7 +56,7 @@ const App = () => {
       <Animated.View
         style={[
           styles.menuBarContainer,
-          { width: menuBarWidth, left: menuBarPosition },
+          { left: menuBarPosition, width: menuBarWidth },
         ]}
       >
         <MenuBar />
@@ -70,8 +64,8 @@ const App = () => {
 
       <Animated.View
         style={[
-            {right: productListPosition,
-              width: productListWidth,}
+          styles.productList,
+          { width: productListWidth }
         ]}
       >
         <ProductList />
@@ -110,6 +104,11 @@ const styles = StyleSheet.create({
     left: 25,
     zIndex: 9999,
   },
+  productList: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    height: '100%', }
 });
 
 export default App;
