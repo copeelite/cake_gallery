@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import {
-  View,
   TouchableOpacity,
   Animated,
   StyleSheet,
@@ -23,12 +22,20 @@ const App = () => {
     Animated.parallel([
       Animated.timing(menuBarPosition, {
         toValue: isMenuBarOpen ? -menuBarWidth : 0,
+<<<<<<< HEAD
         duration: 150,
+=======
+        duration: 100,
+>>>>>>> 2941e3ad1c97a0c52590d7e97d758e9c54152f3b
         useNativeDriver: false,
       }),
       Animated.timing(productListWidth, {
         toValue: targetWidth,
+<<<<<<< HEAD
         duration: 150,
+=======
+        duration: 100,
+>>>>>>> 2941e3ad1c97a0c52590d7e97d758e9c54152f3b
         useNativeDriver: false,
       }),
     ]).start(() => {
@@ -36,7 +43,10 @@ const App = () => {
       setMenuBarOpen(!isMenuBarOpen);
     });
   };
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2941e3ad1c97a0c52590d7e97d758e9c54152f3b
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
