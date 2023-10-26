@@ -2,17 +2,15 @@ import React from "react";
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   TextInput,
   ScrollView,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import Holiday from "./Holiday";
 import upcomingHolidays from "./HolidayData";
-const MenuBar = ({
-  categories = upcomingHolidays,
-  onCategorySelect = () => {},
-}) => {
+const MenuBar = ({ onCategorySelect }) => {
   return (
     <View style={styles.menuBar}>
       <Text style={styles.menuTitle}>Menu</Text>
@@ -23,17 +21,7 @@ const MenuBar = ({
         placeholderTextColor="gray"
       />
 
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {categories.map((category, index) => (
-          <TouchableOpacity
-            key={index}
-            onPress={() => onCategorySelect(category)}
-            style={styles.categoryItem}
-          >
-            <Text style={styles.categoryText}>{category.name}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      <Holiday onCategorySelect={onCategorySelect} />
     </View>
   );
 };

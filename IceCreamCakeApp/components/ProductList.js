@@ -34,11 +34,11 @@ const fakeProducts = [
 import React from 'react';
 import { View, Text, Image, StyleSheet, SafeAreaView } from 'react-native';
 
-const ProductList = ({ products = fakeProducts }) => {
+const ProductList = ({ products = fakeProducts, title }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Seneca Bakery</Text>
+      <Text style={styles.title}>{title}</Text>
       </View>
       <View style={styles.listContainer}>
         {products.map((product, index) => (
