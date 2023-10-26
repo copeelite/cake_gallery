@@ -1,8 +1,18 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
-import upcomingHolidays from './HolidayData'
-const MenuBar = ({categories = upcomingHolidays, onCategorySelect = () => {} }) => {
+import React from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+  ScrollView,
+} from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
+import upcomingHolidays from "./HolidayData";
+const MenuBar = ({
+  categories = upcomingHolidays,
+  onCategorySelect = () => {},
+}) => {
   return (
     <View style={styles.menuBar}>
       <Text style={styles.menuTitle}>Menu</Text>
@@ -11,21 +21,22 @@ const MenuBar = ({categories = upcomingHolidays, onCategorySelect = () => {} }) 
         style={styles.searchBar}
         placeholder="&#x1F50E; Search"
         placeholderTextColor="gray"
-        />
+      />
 
-      {categories.map((category, index) => (
-        <TouchableOpacity
-          key={index}
-          onPress={() => onCategorySelect(category)}
-          style={styles.categoryItem}
-        >
-          <Text style={styles.categoryText}>{category.name}</Text>
-        </TouchableOpacity>
-      ))}
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {categories.map((category, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={() => onCategorySelect(category)}
+            style={styles.categoryItem}
+          >
+            <Text style={styles.categoryText}>{category.name}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -33,7 +44,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   menuBar: {
-    paddingTop: 60, 
+    paddingTop: 60,
     flex: 1,
     padding: 25,
     backgroundColor: "#e0e0e0",
@@ -66,18 +77,17 @@ const styles = StyleSheet.create({
   },
   menuTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   searchBar: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     borderRadius: 5,
-    paddingLeft: 5,  // padding inside the TextInput
+    paddingLeft: 5, // padding inside the TextInput
     marginBottom: 10,
   },
-
 });
 
 export default MenuBar;

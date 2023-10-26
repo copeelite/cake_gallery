@@ -60,7 +60,7 @@ const fathersDay = (year) => {
   return thirdSunday;
 };
 
-const currentDateTime = new Date('');
+const currentDateTime = new Date();
 const currentYear = currentDateTime.getFullYear();
 
 // Calculate holiday dates for the current and next year
