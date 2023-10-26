@@ -11,13 +11,15 @@ const fakeProducts = [
     id: 2,
     name: "Ghostly Cupcakes",
     category: "Halloween",
-    image: "https://www.carvel.com/-/media/carvel/menu/cakes/car_450099_screamers-product-page-update_v1.png?v=1&d=20201102T124746Z",
+    image:
+      "https://www.carvel.com/-/media/carvel/menu/cakes/car_450099_screamers-product-page-update_v1.png?v=1&d=20201102T124746Z",
   },
   {
     id: 3,
     name: "Witch Hat Cookies",
     category: "Halloween",
-    image: "https://www.carvel.com/-/media/carvel/featured/cakes/3d-butterfly-card/cake-cta-new_0015_50-witch.png?v=1&d=20180507T160631Z&la=en&h=215&w=436&hash=C04B53AA83AE596AC7EAA0A6CC150D16",
+    image:
+      "https://www.carvel.com/-/media/carvel/featured/cakes/3d-butterfly-card/cake-cta-new_0015_50-witch.png?v=1&d=20180507T160631Z&la=en&h=215&w=436&hash=C04B53AA83AE596AC7EAA0A6CC150D16",
   },
 
   // Christmas Products
@@ -83,7 +85,7 @@ import {
   ScrollView,
   PanResponder,
   Animated,
-  Dimensions
+  Dimensions,
 } from "react-native";
 
 const ProductList = ({ products = fakeProducts, title }) => {
@@ -101,8 +103,8 @@ const ProductList = ({ products = fakeProducts, title }) => {
     // Start the animation from off-screen
     pan.setValue({ x: 0, y: screenHeight });
 
-    // Animate to slide up
-    Animated.spring(pan, {
+    //Animate to slide up
+    Animated.timing(pan, {
       toValue: { x: 0, y: 0 },
       useNativeDriver: false,
     }).start();
@@ -111,16 +113,21 @@ const ProductList = ({ products = fakeProducts, title }) => {
   const pan = useRef(new Animated.ValueXY()).current;
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
-    onPanResponderMove: Animated.event([null, { dy: pan.y }], {
-      useNativeDriver: false,
-    }),
-    onPanResponderRelease: (e, gestureState) => {
+    onPanResponderMove: (evt, gestureState) => {
+      if (gestureState.dy >= 0) {
+        // Only allow dragging downwards
+        pan.setValue({ x: 0, y: gestureState.dy });
+      }
+    },
+    onPanResponderRelease: (evt, gestureState) => {
       if (gestureState.dy > 50) {
         // Threshold to trigger close
         setModalVisible(false);
       } else {
-        Animated.spring(pan, {
+        // Snap back to original position
+        Animated.timing(pan, {
           toValue: { x: 0, y: 0 },
+          duration: 150,
           useNativeDriver: false,
         }).start();
       }
@@ -128,6 +135,7 @@ const ProductList = ({ products = fakeProducts, title }) => {
   });
 
   return (
+    <>
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>{title}</Text>
@@ -147,7 +155,7 @@ const ProductList = ({ products = fakeProducts, title }) => {
           </Pressable>
         ))}
       </View>
-
+      </SafeAreaView>
       <Modal
         animationType="slide"
         transparent={true}
@@ -168,7 +176,7 @@ const ProductList = ({ products = fakeProducts, title }) => {
           </Animated.View>
         </View>
       </Modal>
-    </SafeAreaView>
+      </>
   );
 };
 
@@ -212,10 +220,12 @@ const styles = StyleSheet.create({
   },
 
   modalView: {
-    margin: 20,
+    margin: 10,
     backgroundColor: "white",
     borderRadius: 20,
-    padding: 35,
+    paddingTop: 10, // Reduced top padding
+    paddingBottom: 35, // Adjust as needed
+    paddingHorizontal: 35, // Adjust as needed
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -227,8 +237,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalImage: {
-    width: 565,
-    height: 565,
+    width: 600,
+    height: 600,
     resizeMode: "contain",
   },
   closeButton: {
@@ -238,11 +248,11 @@ const styles = StyleSheet.create({
     elevation: 2,
     borderRadius: 10,
   },
-  closeButtonText: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
+  // closeButtonText: {
+    
+  //   fontWeight: "bold",
+  //   textAlign: "center",
+  // },
   modalBackground: {
     flex: 1,
     justifyContent: "center",
