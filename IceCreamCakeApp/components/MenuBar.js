@@ -1,12 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-
-const MenuBar = ({categories = [
-  { id: 1, name: 'Chocolate Cakes' },
-  { id: 2, name: 'Vanilla Cakes' },
-  {id: 3 , name: 'Strawberry Cake'}
-], onCategorySelect = () => {} }) => {
+import upcomingHolidays from './HolidayData'
+const MenuBar = ({categories = upcomingHolidays, onCategorySelect = () => {} }) => {
   return (
     <View style={styles.menuBar}>
       <Text style={styles.menuTitle}>Menu</Text>
