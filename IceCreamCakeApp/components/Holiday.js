@@ -71,8 +71,4 @@ const styles = StyleSheet.create({
 
 });
 
-<<<<<<< HEAD
 export default Holiday;
-=======
-export default Holiday;
->>>>>>> 2941e3ad1c97a0c52590d7e97d758e9c54152f3b
