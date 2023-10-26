@@ -1,54 +1,173 @@
-
 const fakeProducts = [
+  // Halloween Products
   {
     id: 1,
-    name: 'Chocolate Cake',
-    price: 12.99,
-    image: 'https://via.placeholder.com/150?text=Chocolate+Cake'
+    name: "Spooky Pumpkin Cake",
+    category: "Halloween",
+    image:
+      "https://www.carvel.com/-/media/carvel/menu/cakes/pumpkin-cake.png?v=1&d=20180402T175240Z",
   },
   {
     id: 2,
-    name: 'Vanilla Cake',
-    price: 10.99,
-    image: 'https://via.placeholder.com/150?text=Vanilla+Cake'
+    name: "Ghostly Cupcakes",
+    category: "Halloween",
+    image: "https://www.carvel.com/-/media/carvel/menu/cakes/car_450099_screamers-product-page-update_v1.png?v=1&d=20201102T124746Z",
   },
   {
     id: 3,
-    name: 'Strawberry Cake',
-    price: 14.99,
-    image: 'https://via.placeholder.com/150?text=Strawberry+Cake'
+    name: "Witch Hat Cookies",
+    category: "Halloween",
+    image: "https://www.carvel.com/-/media/carvel/featured/cakes/3d-butterfly-card/cake-cta-new_0015_50-witch.png?v=1&d=20180507T160631Z&la=en&h=215&w=436&hash=C04B53AA83AE596AC7EAA0A6CC150D16",
   },
+
+  // Christmas Products
   {
     id: 4,
-    name: 'Blueberry Muffin',
-    price: 4.99,
-    image: 'https://via.placeholder.com/150?text=Blueberry+Muffin'
+    name: "Christmas Tree Cake",
+    category: "Christmas",
+    image:
+      "https://www.carvel.com/-/media/carvel/menu/cakes/christmas-tree-cake.png?v=1&d=20180328T151204Z",
   },
   {
     id: 5,
-    name: 'Croissant',
-    price: 2.99,
-    image: 'https://via.placeholder.com/150?text=Croissant'
-  }
+    name: "Santa Claus Cookies",
+    category: "Christmas",
+    image: "https://via.placeholder.com/150?text=Santa+Claus+Cookies",
+  },
+
+  // Birthday Products
+  {
+    id: 6,
+    name: "Classic Birthday Cake",
+    category: "Birthday",
+    image: "https://via.placeholder.com/150?text=Classic+Birthday+Cake",
+  },
+  {
+    id: 7,
+    name: "Birthday Cupcakes",
+    category: "Birthday",
+    image: "https://via.placeholder.com/150?text=Birthday+Cupcakes",
+  },
+
+  // Valentine's Day Products
+  {
+    id: 8,
+    name: "Heart-Shaped Cake",
+    category: "Valentine's Day",
+    image: "https://via.placeholder.com/150?text=Heart-Shaped+Cake",
+  },
+  {
+    id: 9,
+    name: "Love Cookies",
+    category: "Valentine's Day",
+    image: "https://via.placeholder.com/150?text=Love+Cookies",
+  },
+  {
+    id: 10,
+    name: "Tom the Turkey® Cake",
+    category: "Thanksgiving",
+    image:
+      "https://www.carvel.com/-/media/carvel/menu/cakes/tom-the-turkey-cake.png?v=1&d=20180402T175505Z",
+  },
 ];
-import React from 'react';
-import { View, Text, Image, StyleSheet, SafeAreaView } from 'react-native';
+
+import React, { useState, useRef } from "react";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  SafeAreaView,
+  Pressable,
+  Modal,
+  ScrollView,
+  PanResponder,
+  Animated,
+  Dimensions
+} from "react-native";
 
 const ProductList = ({ products = fakeProducts, title }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const filteredProducts = products.filter(
+    (product) => product.category === title
+  );
+  const screenHeight = Dimensions.get("window").height;
+  const openModal = (product) => {
+    setSelectedProduct(product);
+    setModalVisible(true);
+
+    // Start the animation from off-screen
+    pan.setValue({ x: 0, y: screenHeight });
+
+    // Animate to slide up
+    Animated.spring(pan, {
+      toValue: { x: 0, y: 0 },
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const pan = useRef(new Animated.ValueXY()).current;
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onPanResponderMove: Animated.event([null, { dy: pan.y }], {
+      useNativeDriver: false,
+    }),
+    onPanResponderRelease: (e, gestureState) => {
+      if (gestureState.dy > 50) {
+        // Threshold to trigger close
+        setModalVisible(false);
+      } else {
+        Animated.spring(pan, {
+          toValue: { x: 0, y: 0 },
+          useNativeDriver: false,
+        }).start();
+      }
+    },
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-      <Text style={styles.title}>{title}</Text>
+        <Text style={styles.title}>{title}</Text>
       </View>
       <View style={styles.listContainer}>
-        {products.map((product, index) => (
-          <View key={index} style={styles.productItem}>
-            <Image source={{ uri: product.image }} style={styles.productImage} />
+        {filteredProducts.map((product, index) => (
+          <Pressable
+            key={index}
+            style={styles.productItem}
+            onPress={() => openModal(product)}
+          >
+            <Image
+              source={{ uri: product.image }}
+              style={styles.productImage}
+            />
             <Text style={styles.productName}>{product.name}</Text>
-            <Text style={styles.productPrice}>${product.price}</Text>
-          </View>
+          </Pressable>
         ))}
       </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalView}>
+          <Animated.View
+            style={[styles.modalView, { transform: [{ translateY: pan.y }] }]}
+            {...panResponder.panHandlers}
+          >
+            {selectedProduct && (
+              <Image
+                source={{ uri: selectedProduct.image }}
+                style={styles.modalImage}
+              />
+            )}
+          </Animated.View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -56,28 +175,28 @@ const ProductList = ({ products = fakeProducts, title }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
   },
   header: {
     padding: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   listContainer: {
     flex: 1,
     padding: 10,
   },
   productItem: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc",
   },
   productImage: {
     width: 50,
@@ -89,7 +208,46 @@ const styles = StyleSheet.create({
   },
   productPrice: {
     marginLeft: 10,
-    textAlign: 'right', // Ensure the price is aligned to the right
+    textAlign: "right", // Ensure the price is aligned to the right
+  },
+
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalImage: {
+    width: 565,
+    height: 565,
+    resizeMode: "contain",
+  },
+  closeButton: {
+    marginTop: 15,
+    backgroundColor: "#2196F3",
+    padding: 10,
+    elevation: 2,
+    borderRadius: 10,
+  },
+  closeButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
 });
 
