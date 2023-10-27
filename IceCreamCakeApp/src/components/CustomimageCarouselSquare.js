@@ -29,7 +29,7 @@ const CustomImageCarouselSquare = ({ data, startIndex = 0}) => {
     { key: "spacer-right" },
   ]);
   const { width } = useWindowDimensions();
-  const SIZE = width * 0.6;
+  const SIZE = width * 0.55;
   const SPACER = (width - SIZE) / 2;
   const x = useSharedValue(0);
   const onScroll = useAnimatedScrollHandler({
