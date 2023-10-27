@@ -14,7 +14,7 @@ const SECTIONS = 10; // using 3 copies of data (beginning, middle, end)
 const Holiday = ({ categories = upcomingHolidays, onCategorySelect = () => {} }) => {
   
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <ScrollView showsVerticalScrollIndicator={false}  bounces={false}>
         {categories.map((category, index) => (
           <Pressable
             key={index}

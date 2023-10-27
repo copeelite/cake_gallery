@@ -19,50 +19,55 @@ const fakeProducts = [
     name: "Witch Hat Cookies",
     category: "Halloween",
     image:
-      "https://www.carvel.com/-/media/carvel/featured/cakes/3d-butterfly-card/cake-cta-new_0015_50-witch.png?v=1&d=20180507T160631Z&la=en&h=215&w=436&hash=C04B53AA83AE596AC7EAA0A6CC150D16",
+      "https://www.carvel.com/-/media/carvel/menu/cakes/happy-holidays-square-cake.png?v=1&d=20180402T175052Z",
   },
 
   // Christmas Products
   {
     id: 4,
     name: "Christmas Tree Cake",
-    category: "Christmas",
+    category: "Halloween",
     image:
       "https://www.carvel.com/-/media/carvel/menu/cakes/christmas-tree-cake.png?v=1&d=20180328T151204Z",
   },
   {
     id: 5,
     name: "Santa Claus Cookies",
-    category: "Christmas",
-    image: "https://via.placeholder.com/150?text=Santa+Claus+Cookies",
+    category: "Halloween",
+    image:
+      "https://www.carvel.com/-/media/carvel/menu/cakes/fudgie-the-whale.png?v=1&d=20180402T175020Z&la=en&h=600&w=600&hash=EB523660900A86FC3D4C1F8C90A5FEE1",
   },
 
   // Birthday Products
   {
     id: 6,
     name: "Classic Birthday Cake",
-    category: "Birthday",
-    image: "https://via.placeholder.com/150?text=Classic+Birthday+Cake",
+    category: "Halloween",
+    image:
+      "https://www.carvel.com/-/media/carvel/menu/cakes/3d-ice-cream-cone-cake.png?v=1&d=20180328T151229Z",
   },
   {
     id: 7,
     name: "Birthday Cupcakes",
-    category: "Birthday",
-    image: "https://via.placeholder.com/150?text=Birthday+Cupcakes",
+    category: "Halloween",
+    image:
+      "https://www.carvel.com/-/media/carvel/menu/cakes/car-1061871-c5-cinn-olo-web-600x600-cake-2023-01.png?v=1&d=20230927T093350Z&la=en&h=597&w=597&hash=38E984F68AC8A2F57398D4CDBAF62632",
   },
 
   // Valentine's Day Products
   {
     id: 8,
     name: "Heart-Shaped Cake",
-    category: "Valentine's Day",
-    image: "https://via.placeholder.com/150?text=Heart-Shaped+Cake",
+    category: "Halloween",
+    image:
+      "https://www.carvel.com/-/media/carvel/menu/cakes/3d-butterfly-cake.png?v=1&d=20180328T151155Z",
   },
   {
     id: 9,
     name: "Love Cookies",
     category: "Valentine's Day",
-    image: "https://via.placeholder.com/150?text=Love+Cookies",
+    image:
+      "https://www.carvel.com/-/media/carvel/menu/cakes/sweet-image-cake.png?v=1&d=20180328T151153Z&la=en&h=600&w=600&hash=2314D5957C149913C898DCECC8F1BB8A",
   },
   {
     id: 10,
@@ -87,7 +92,8 @@ import {
   Animated,
   Dimensions,
 } from "react-native";
-
+import CustomImageCarouselSquare from "./CustomimageCarouselSquare";
+import CustomimageCarouselSquareNew from "./CustomimageCarouselSquareNew";
 const ProductList = ({ products = fakeProducts, title }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -162,24 +168,19 @@ const ProductList = ({ products = fakeProducts, title }) => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.modalView}>
+        <View >
           <Animated.View
-            style={[styles.modalView, { transform: [{ translateY: pan.y }] }]}
+            style={[ { transform: [{ translateY: pan.y }] }]}
             {...panResponder.panHandlers}
           >
-            {selectedProduct && (
-              <Image
-                source={{ uri: selectedProduct.image }}
-                style={styles.modalImage}
-              />
-            )}
+            <CustomImageCarouselSquare data={filteredProducts}/>
+
           </Animated.View>
         </View>
       </Modal>
       </>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -219,40 +220,8 @@ const styles = StyleSheet.create({
     textAlign: "right", // Ensure the price is aligned to the right
   },
 
-  modalView: {
-    margin: 10,
-    backgroundColor: "white",
-    borderRadius: 20,
-    paddingTop: 10, // Reduced top padding
-    paddingBottom: 35, // Adjust as needed
-    paddingHorizontal: 35, // Adjust as needed
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalImage: {
-    width: 600,
-    height: 600,
-    resizeMode: "contain",
-  },
-  closeButton: {
-    marginTop: 15,
-    backgroundColor: "#2196F3",
-    padding: 10,
-    elevation: 2,
-    borderRadius: 10,
-  },
-  // closeButtonText: {
-    
-  //   fontWeight: "bold",
-  //   textAlign: "center",
-  // },
+  
+
   modalBackground: {
     flex: 1,
     justifyContent: "center",
