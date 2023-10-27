@@ -6,14 +6,23 @@ import {
   Image,
   useWindowDimensions,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef} from "react";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   useAnimatedScrollHandler,
   interpolate,
 } from "react-native-reanimated";
-const CustomImageCarouselSquare = ({ data }) => {
+const CustomImageCarouselSquare = ({ data, startIndex = 0}) => {
+
+
+  const scrollViewRef = useRef(null);
+  useEffect(() => {
+    const offset = SIZE * startIndex;
+    scrollViewRef.current?.scrollTo({ x: offset, animated: false });
+  }, [startIndex, SIZE]);
+
+
   const [newData] = useState([
     { key: "spacer-left" },
     ...data,
@@ -37,6 +46,7 @@ const CustomImageCarouselSquare = ({ data }) => {
       snapToInterval={SIZE}
       decelerationRate="fast"
       onScroll={onScroll}
+      ref={scrollViewRef}
     >
       {newData.map((item, index) => {
         const style = useAnimatedStyle(() => {

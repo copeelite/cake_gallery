@@ -97,13 +97,15 @@ import CustomimageCarouselSquareNew from "./CustomimageCarouselSquareNew";
 const ProductList = ({ products = fakeProducts, title }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [desiredIndex, setDesiredIndex] = useState(0);
 
   const filteredProducts = products.filter(
     (product) => product.category === title
   );
   const screenHeight = Dimensions.get("window").height;
-  const openModal = (product) => {
+  const openModal = (product, index) => {
     setSelectedProduct(product);
+    setDesiredIndex(index)
     setModalVisible(true);
 
     // Start the animation from off-screen
@@ -151,7 +153,7 @@ const ProductList = ({ products = fakeProducts, title }) => {
           <Pressable
             key={index}
             style={styles.productItem}
-            onPress={() => openModal(product)}
+            onPress={() => openModal(product, index)}
           >
             <Image
               source={{ uri: product.image }}
@@ -173,7 +175,7 @@ const ProductList = ({ products = fakeProducts, title }) => {
             style={[ { transform: [{ translateY: pan.y }] }]}
             {...panResponder.panHandlers}
           >
-            <CustomImageCarouselSquare data={filteredProducts}/>
+            <CustomImageCarouselSquare data={filteredProducts}  startIndex={desiredIndex} />
 
           </Animated.View>
         </View>
