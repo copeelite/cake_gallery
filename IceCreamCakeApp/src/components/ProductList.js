@@ -76,6 +76,11 @@ const fakeProducts = [
     image:
       "https://www.carvel.com/-/media/carvel/menu/cakes/tom-the-turkey-cake.png?v=1&d=20180402T175505Z",
   },
+
+
+
+
+  
 ];
 
 import React, { useState, useRef } from "react";
@@ -93,7 +98,6 @@ import {
   Dimensions,
 } from "react-native";
 import CustomImageCarouselSquare from "./CustomimageCarouselSquare";
-import CustomimageCarouselSquareNew from "./CustomimageCarouselSquareNew";
 const ProductList = ({ products = fakeProducts, title }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);

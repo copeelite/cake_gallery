@@ -1,33 +1,45 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Image,
-  useWindowDimensions,
-} from "react-native";
-import React, { useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { View, StyleSheet, Image, useWindowDimensions } from "react-native";
 import Animated, {
   useSharedValue,
-  useAnimatedStyle,
   useAnimatedScrollHandler,
+  useAnimatedStyle,
   interpolate,
 } from "react-native-reanimated";
-const CustomImageCarouselSquare = ({ data, startIndex = 0}) => {
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { FlatList } from 'react-native-gesture-handler';
 
 
+const AnimatedItem = ({ item, index, x, SIZE, SPACER }) => {
+  const style = useAnimatedStyle(() => {
+    const scale = interpolate(
+      x.value,
+      [(index - 2) * SIZE, (index - 1) * SIZE, index * SIZE],
+      [0.8, 1, 0.8]
+    );
+    return { transform: [{ scale }] };
+  });
+
+  if (!item.image) {
+    return <View style={{ width: SPACER }} />;
+  }
+
+  return (
+    <View style={{ width: SIZE }}>
+      <Animated.View style={[styles.imageContainer, style]}>
+        <Image source={{ uri: item.image }} style={styles.image} />
+      </Animated.View>
+    </View>
+  );
+};
+
+const CustomImageCarouselSquare = ({ data, startIndex = 0 }) => {
   const scrollViewRef = useRef(null);
   useEffect(() => {
     const offset = SIZE * startIndex;
-    scrollViewRef.current?.scrollTo({ x: offset, animated: false });
+    scrollViewRef.current?.scrollToOffset({ offset, animated: false });
   }, [startIndex, SIZE]);
 
-
-  const [newData] = useState([
-    { key: "spacer-left" },
-    ...data,
-    { key: "spacer-right" },
-  ]);
   const { width } = useWindowDimensions();
   const SIZE = width * 0.55;
   const SPACER = (width - SIZE) / 2;
@@ -37,40 +49,28 @@ const CustomImageCarouselSquare = ({ data, startIndex = 0}) => {
       x.value = event.contentOffset.x;
     },
   });
+
+  const newData = [
+    { key: "spacer-left" },
+    ...data,
+    { key: "spacer-right" },
+  ];
+
   return (
-    <Animated.ScrollView
+    <Animated.FlatList
       horizontal
-      showHorizontalScrollIndicator={false}
+      data={newData}
+      renderItem={({ item, index }) => (
+        <AnimatedItem item={item} index={index} x={x} SIZE={SIZE} SPACER={SPACER} />
+      )}
+      showsHorizontalScrollIndicator={false}
       bounces={false}
       scrollEventThrottle={16}
       snapToInterval={SIZE}
       decelerationRate="fast"
       onScroll={onScroll}
       ref={scrollViewRef}
-    >
-      {newData.map((item, index) => {
-        const style = useAnimatedStyle(() => {
-          const scale = interpolate(
-            x.value,
-            [(index - 2) * SIZE, (index - 1) * SIZE, index * SIZE],
-            [0.8, 1, 0.8]
-          );
-          return {
-            transform: [{ scale }],
-          };
-        });
-        if (!item.image) {
-          return <View style={{ width: SPACER }} key={index} />;
-        }
-        return (
-          <View key={index} style={{ width: SIZE }}>
-            <Animated.View style={[styles.imageContainer, style, style.shadowEffect]}>
-              <Image source={{ uri: item.image }} style={styles.image} />
-            </Animated.View>
-          </View>
-        );
-      })}
-    </Animated.ScrollView>
+    />
   );
 };
 
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   image: {
-    width: "100%", // example width
+    width: "100%",
     height: undefined,
     resizeMode: "contain",
     backgroundColor: "white",
@@ -90,5 +90,4 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
   },
-  
 });
