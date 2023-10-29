@@ -2,23 +2,26 @@ import React from "react";
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   TextInput,
+  ScrollView,
 } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
 import Holiday from "./Holiday";
-import HolidayEasy from "./HolidayEasy";
-
-const MenuBar = () => {
+import upcomingHolidays from "./HolidayData";
+const MenuBar = ({ onCategorySelect }) => {
   return (
     <View style={styles.menuBar}>
-      <Text style={styles.menuTitle}>Holiday</Text>
+      <Text style={styles.menuTitle}>Menu</Text>
+
       <TextInput
         style={styles.searchBar}
         placeholder="&#x1F50E; Search"
         placeholderTextColor="gray"
       />
-      <HolidayEasy />
+
+      <Holiday onCategorySelect={onCategorySelect} />
     </View>
   );
 };
@@ -36,6 +39,14 @@ const styles = StyleSheet.create({
     borderRightWidth: 1, // Add a right border
     borderRightColor: "#888", // Slightly darker color to simulate shadow
     elevation: 3, // Add a subtle drop shadow
+  },
+  categoryItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+  },
+  categoryText: {
+    padding: 10,
   },
   mainContent: {
     flex: 1,
@@ -56,7 +67,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "brown",
   },
   searchBar: {
     height: 40,
