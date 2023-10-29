@@ -87,7 +87,6 @@ import {
   SafeAreaView,
   Pressable,
   Modal,
-  ScrollView,
   PanResponder,
   Animated,
   Dimensions,
@@ -118,33 +117,18 @@ const ProductList = ({ products = fakeProducts, title }) => {
   };
 
   const pan = useRef(new Animated.ValueXY()).current;
-
   const [lastClickTime, setLastClickTime] = useState(0);
-  const [clickCount, setClickCount] = useState(0);
   const DOUBLE_CLICK_DELAY = 300; // milliseconds
-
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
-    onPanResponderRelease: (evt, gestureState) => {
+    onPanResponderRelease: () => {
       const currentTime = new Date().getTime();
-      if (lastClickTime && (currentTime - lastClickTime) < DOUBLE_CLICK_DELAY) {
-        // Detected double click
-        setClickCount(0);
-        setLastClickTime(0);
+      if (currentTime - lastClickTime < DOUBLE_CLICK_DELAY) {
+        // Double click detected
         setModalVisible(false);
-      } else {
-        // First click or clicks too far apart
-        setClickCount(clickCount + 1);
-        setLastClickTime(currentTime);
-  
-        // Reset click count after delay
-        setTimeout(() => {
-          setClickCount(0);
-          setLastClickTime(0);
-        }, DOUBLE_CLICK_DELAY);
       }
+      setLastClickTime(currentTime);
     },
-  
     // onPanResponderMove: (evt, gestureState) => {
     //   if (gestureState.dy >= 0) {
     //     // Only allow dragging downwards
@@ -194,10 +178,9 @@ const ProductList = ({ products = fakeProducts, title }) => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View>
+        <View {...panResponder.panHandlers}>
           <Animated.View
-            style={[{ transform: [{ translateY: pan.y }] }]}
-            {...panResponder.panHandlers}
+            //style={[{ transform: [{ translateY: pan.y }] }]}
           >
             <CustomImageCarouselSquare
               data={filteredProducts}
